@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 export const FilterContainer = styled.div`
-  margin-bottom: 20px;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
 `;
 

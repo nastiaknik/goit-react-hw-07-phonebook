@@ -29,7 +29,7 @@ export const StyledField = styled(Field)`
   border: 2px solid #e5e0ff;
   border-radius: 5px;
   font-size: 16px;
-  max-width: 200px;
+  max-width: 190px;
 
   :focus {
     outline: 1px solid #7286d3;

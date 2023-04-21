@@ -9,10 +9,10 @@ import { ContactList } from './ContactList/ContactList';
 import { ContactFilter } from './ContactFilter/ContactFilter';
 import { fetchContacts } from 'redux/operations';
 import { useEffect } from 'react';
+import { Container, Title } from './Section/Section.styled';
 
 export const App = () => {
   const contacts = useSelector(selectContacts);
-  /* const isLoading = useSelector(selectIsLoading); */
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,12 +27,26 @@ export const App = () => {
       <Section title="Phonebook">
         <AddContactForm />
       </Section>
+
       {contacts.length > 0 && (
-        <Section title="Contacts">
-          <ContactFilter />
-          <ContactList />
-        </Section>
+        <Container>
+          <Title
+            style={{
+              display: 'flex',
+              flexWrap: 'nowrap',
+              gap: '20px',
+              margin: '0 auto',
+              justifyContent: 'end',
+              alignItems: 'baseline',
+            }}
+          >
+            Contacts
+            <ContactFilter />
+          </Title>
+          <ContactList contacts={contacts} />
+        </Container>
       )}
+
       <ToastContainer newestOnTop={true} autoClose={3000} />
     </Layout>
   );

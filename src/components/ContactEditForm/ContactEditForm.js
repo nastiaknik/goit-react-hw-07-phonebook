@@ -30,12 +30,21 @@ export function ContactEditForm({ contact }) {
       contact => contact.name === name || contact.number === number
     );
     if (isContactExist) {
-      toast.error(`${name} is already in the list`);
+      toast.error(
+        <p>
+          <span style={{ color: 'red' }}>{name}</span> is already in the list!
+        </p>
+      );
       return;
     }
 
     if (contact.name === name && contact.number === number) {
-      toast.warning(`You did not change to contact ${contact.name}!`);
+      toast.warning(
+        <p>
+          You did not change contact{' '}
+          <span style={{ color: 'orange' }}>{contact.name}</span>!
+        </p>
+      );
     }
 
     dispatch(editContact({ ...contact, name, number }));
