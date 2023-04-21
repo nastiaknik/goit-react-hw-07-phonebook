@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectContacts } from '../redux/selectors';
+import { fetchContacts } from 'redux/operations';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Layout } from 'components/Layout/Layout';
@@ -7,8 +9,6 @@ import { Section } from 'components/Section/Section';
 import { AddContactForm } from './AddContactForm/AddContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { ContactFilter } from './ContactFilter/ContactFilter';
-import { fetchContacts } from 'redux/operations';
-import { useEffect } from 'react';
 import { Container, Title } from './Section/Section.styled';
 
 export const App = () => {

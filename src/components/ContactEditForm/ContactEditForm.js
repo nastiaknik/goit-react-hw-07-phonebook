@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { editContact } from '../../redux/operations';
-import { toast } from 'react-toastify';
 import { selectContacts } from 'redux/selectors';
+import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Modal from 'react-bootstrap/Modal';
@@ -117,3 +118,16 @@ export function ContactEditForm({ contact }) {
     </>
   );
 }
+
+ContactEditForm.propTypes = {
+  contact: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    isFavorite: PropTypes.bool.isRequired,
+    colors: PropTypes.shape({
+      color: PropTypes.string,
+      backgroundColor: PropTypes.string,
+    }),
+  }).isRequired,
+};

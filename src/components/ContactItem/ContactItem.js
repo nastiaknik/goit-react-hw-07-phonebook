@@ -61,7 +61,6 @@ export const ContactItem = ({ contacts }) => {
   });
 
   return contacts.map(contact => {
-    console.log(contact);
     const currentContact = contacts.find(
       updatedContact => updatedContact.id === contact.id
     );
@@ -108,9 +107,9 @@ ContactItem.propTypes = {
       id: PropTypes.string.isRequired,
       isFavorite: PropTypes.bool.isRequired,
       colors: PropTypes.shape({
-        color: PropTypes.string.isRequired,
-        backgroundColor: PropTypes.string.isRequired,
+        color: PropTypes.string,
+        backgroundColor: PropTypes.string,
       }),
-    })
-  ),
+    }).isRequired
+  ).isRequired,
 };

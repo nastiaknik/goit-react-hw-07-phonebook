@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { selectFilterValue } from '../../redux/selectors';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { ContactItem } from '../ContactItem/ContactItem';
 import { Table, TableHead } from './ContactList.styled';
@@ -56,4 +57,19 @@ export const ContactList = ({ contacts }) => {
       </tbody>
     </Table>
   );
+};
+
+ContactItem.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+      isFavorite: PropTypes.bool.isRequired,
+      colors: PropTypes.shape({
+        color: PropTypes.string,
+        backgroundColor: PropTypes.string,
+      }),
+    }).isRequired
+  ).isRequired,
 };
