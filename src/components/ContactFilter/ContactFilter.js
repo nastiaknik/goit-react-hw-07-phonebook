@@ -1,12 +1,12 @@
 import { FiSearch } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilter } from '../../redux/filterSlice';
-import { getFilter } from '../../redux/selectors';
+import { setFilterValue } from '../../redux/filterSlice';
+import { selectFilterValue } from '../../redux/selectors';
 import { FilterContainer, FilterInput } from './ContactFilter.styled';
 
 export const ContactFilter = () => {
   const dispatch = useDispatch();
-  const filter = useSelector(getFilter);
+  const filter = useSelector(selectFilterValue);
 
   return (
     <FilterContainer>
@@ -16,7 +16,7 @@ export const ContactFilter = () => {
       <FilterInput
         id="filter"
         type="text"
-        onChange={event => dispatch(setFilter(event.target.value))}
+        onChange={event => dispatch(setFilterValue(event.target.value))}
         value={filter}
         name="filter"
         placeholder="Search contacts"

@@ -1,43 +1,86 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit';
-import { getRandomColor } from '../utils/getRandomColor';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
+import {
+  fetchContacts,
+  deleteContact,
+  addContact,
+  toggleFavorite,
+  editContact,
+} from './operations';
 
-const contactsInitialState = [];
+const contactsInitialState = {
+  items: [],
+  isLoading: false,
+  error: null,
+};
 
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState: contactsInitialState,
-  reducers: {
-    addContact: {
-      reducer(state, action) {
-        state.push(action.payload);
-      },
-      prepare(name, number) {
+  extraReducers: builder => {
+    builder
+      .addCase(fetchContacts.fulfilled, (state, action) => {
         return {
-          payload: {
-            name,
-            number,
-            id: nanoid(6),
-            favorite: false,
-            colors: getRandomColor(),
-          },
+          items: action.payload,
+          isLoading: false,
+          error: null,
         };
-      },
-    },
-    deleteContact(state, action) {
-      const index = state.findIndex(contact => contact.id === action.payload);
-      state.splice(index, 1);
-    },
-    toggleFavorite(state, action) {
-      for (const contact of state) {
-        if (contact.id === action.payload) {
-          contact.favorite = !contact.favorite;
-          break;
+      })
+      .addCase(deleteContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const index = state.items.findIndex(
+          contact => contact.id === action.payload
+        );
+        state.items.splice(index, 1);
+        state.error = null;
+        /* state.items.filter(contact => contact.id !== action.payload); */
+      })
+      .addCase(addContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.items.push(action.payload);
+        state.error = null;
+      })
+      .addCase(toggleFavorite.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        const index = state.items.findIndex(
+          item => item.id === action.payload.id
+        );
+        state.items.splice(index, 1, action.payload);
+      })
+      .addCase(editContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const index = state.items.findIndex(
+          item => item.id === action.payload.id
+        );
+        state.items.splice(index, 1, action.payload);
+        state.error = null;
+      })
+      .addMatcher(
+        isAnyOf(
+          editContact.pending,
+          toggleFavorite.pending,
+          addContact.pending,
+          deleteContact.pending,
+          fetchContacts.pending
+        ),
+        state => {
+          state.isLoading = true;
         }
-      }
-    },
+      )
+      .addMatcher(
+        isAnyOf(
+          editContact.rejected,
+          toggleFavorite.rejected,
+          addContact.rejected,
+          deleteContact.rejected,
+          fetchContacts.rejected
+        ),
+        (state, action) => {
+          state.isLoading = false;
+          state.error = action.payload;
+        }
+      );
   },
 });
 
-export const { addContact, deleteContact, toggleFavorite } =
-  contactsSlice.actions;
 export const contactsReducer = contactsSlice.reducer;

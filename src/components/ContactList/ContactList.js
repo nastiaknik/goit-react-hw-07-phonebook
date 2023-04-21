@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
-import { getContacts, getFilter } from '../../redux/selectors';
+import { selectContacts, selectFilterValue } from '../../redux/selectors';
 import { toast } from 'react-toastify';
 import { ContactItem } from '../ContactItem/ContactItem';
 import { Table, TableHead } from './ContactList.styled';
 
 export const ContactList = () => {
-  const contacts = useSelector(getContacts);
-  const filter = useSelector(getFilter);
+  const contacts = useSelector(selectContacts);
+  const filter = useSelector(selectFilterValue);
 
   const handleFilterContact = () => {
     if (

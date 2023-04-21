@@ -1,11 +1,17 @@
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { deleteContact, toggleFavorite } from 'redux/contactsSlice';
+import {
+  deleteContact,
+  editContact,
+  toggleFavorite,
+} from '../../redux/operations';
 import { RiDeleteBinLine } from 'react-icons/ri';
-import { IoIosCall } from 'react-icons/io';
+/* import { IoIosCall } from 'react-icons/io'; */
 import { BsStar, BsStarFill } from 'react-icons/bs';
 import { getInitials } from '../../utils/getInitials';
+import { ContactEditForm } from '.././ContactEditForm/ContactEditForm';
+import { getRandomColor } from '../../utils/getRandomColor';
 import {
   TableRow,
   Avatar,
@@ -13,14 +19,14 @@ import {
   NumberCeil,
   ActionCeil,
   Button,
-  Link,
+  /* Link, */
 } from './ContactItem.styled';
 
 export const ContactItem = ({ contacts }) => {
   const dispatch = useDispatch();
 
   const onDelete = contact => {
-    dispatch(deleteContact(contact));
+    dispatch(deleteContact(contact.id));
     toast.success(
       <p>
         Contact <span style={{ color: 'green' }}>{contact.name}</span> deleted!
@@ -29,8 +35,8 @@ export const ContactItem = ({ contacts }) => {
   };
 
   const onFavorite = contact => {
-    if (contact.favorite) {
-      dispatch(toggleFavorite(contact.id));
+    dispatch(toggleFavorite({ ...contact, isFavorite: !contact.isFavorite }));
+    if (contact.isFavorite) {
       toast.success(
         <p>
           Contact <span style={{ color: 'green' }}>{contact.name}</span> removed
@@ -39,7 +45,6 @@ export const ContactItem = ({ contacts }) => {
       );
       return;
     }
-    dispatch(toggleFavorite(contact.id));
     toast.success(
       <p>
         Contact <span style={{ color: 'green' }}>{contact.name}</span> added to
@@ -48,38 +53,39 @@ export const ContactItem = ({ contacts }) => {
     );
   };
 
+  contacts.map(contact => {
+    if (!contact.colors) {
+      dispatch(editContact({ ...contact, colors: getRandomColor() }));
+    }
+    return contact;
+  });
+
   return contacts.map(contact => {
-    const updatedContact = contacts.find(
-      currentContact => currentContact.id === contact.id
+    console.log(contact);
+    const currentContact = contacts.find(
+      updatedContact => updatedContact.id === contact.id
     );
     return (
       <TableRow key={contact.id}>
         <NameCeil>
-          <Avatar
-            style={
-              contact.colors || {
-                color: 'white',
-                backgroundColor: 'green',
-              }
-            }
-          >
-            {getInitials(contact.name)}
-          </Avatar>
+          <Avatar style={contact.colors}>{getInitials(contact.name)}</Avatar>
           {contact.name}
         </NameCeil>
         <NumberCeil>{contact.number}</NumberCeil>
         <ActionCeil>
           <Button type="button" onClick={() => onFavorite(contact)}>
-            {updatedContact.favorite ? (
+            {currentContact.isFavorite ? (
               <BsStarFill size={24} color="#ffd800" />
             ) : (
               <BsStar size={24} color="#ffd800" />
             )}
           </Button>
 
-          <Link href={`tel: ${contact.number}`}>
+          <ContactEditForm contact={contact} />
+
+          {/* <Link href={`tel: ${contact.number}`}>
             <IoIosCall size={24} color="green" />
-          </Link>
+          </Link> */}
           <Button
             type="button"
             onClick={() => {
@@ -100,7 +106,7 @@ ContactItem.propTypes = {
       name: PropTypes.string.isRequired,
       number: PropTypes.string.isRequired,
       id: PropTypes.string.isRequired,
-      favorite: PropTypes.bool.isRequired,
+      isFavorite: PropTypes.bool.isRequired,
       colors: PropTypes.shape({
         color: PropTypes.string.isRequired,
         backgroundColor: PropTypes.string.isRequired,

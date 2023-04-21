@@ -1,12 +1,11 @@
 import { Formik, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import 'yup-phone-lite';
-import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectContacts } from '../../redux/selectors';
+import { addContact } from '../../redux/operations';
 import { BiErrorCircle } from 'react-icons/bi';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { getContacts } from '../../redux/selectors';
-import { addContact } from 'redux/contactsSlice';
+import { toast } from 'react-toastify';
+import { getRandomColor } from '../../utils/getRandomColor';
 import {
   InputContainer,
   Button,
@@ -14,7 +13,7 @@ import {
   LabelContainer,
   Form,
   Error,
-} from './ContactForm.styled';
+} from './AddContactForm.styled';
 
 const ContactSchema = Yup.object().shape({
   name: Yup.string()
@@ -23,19 +22,24 @@ const ContactSchema = Yup.object().shape({
     .required('Name is required!')
     .label('Name'),
   number: Yup.string()
-    .phone('UA', 'Please provide a valid phone number!')
-    .required('Number is required!')
-    .label('Number'),
+    .required('Phone number is required!')
+    .label('Number')
+    .matches(
+      /^(\+?\d{1,3}[- ]?)?\d{10}$/,
+      'Please provide a valid phone number!'
+    ),
 });
 
-export const ContactForm = () => {
-  const contacts = useSelector(getContacts);
+export const AddContactForm = () => {
+  const contacts = useSelector(selectContacts);
   const dispatch = useDispatch();
 
   const handleSubmit = (values, actions) => {
     const contact = {
       name: values.name,
       number: values.number,
+      colors: getRandomColor(),
+      isFavourite: false,
     };
 
     const contactExists = contacts.some(item => {
@@ -63,7 +67,8 @@ export const ContactForm = () => {
       return;
     }
 
-    dispatch(addContact(contact.name, contact.number));
+    dispatch(addContact(contact));
+
     toast.success(
       <p>
         Contact <span style={{ color: 'green' }}>{contact.name}</span> added!
@@ -83,19 +88,28 @@ export const ContactForm = () => {
           <Form>
             <InputContainer>
               <LabelContainer>
-                <label htmlFor="name">Name</label>
-                <StyledField
-                  id="name"
-                  type="text"
-                  name="name"
-                  required
-                  placeholder="Anastasia Knihnitska"
-                  value={props.values.name}
-                  onChange={props.handleChange}
-                  className={
-                    props.touched.name && props.errors.name ? 'error' : ''
-                  }
-                />{' '}
+                <div
+                  style={{
+                    display: 'flex',
+                    wtap: 'nowrap',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <label htmlFor="name">Name</label>
+                  <StyledField
+                    id="name"
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="Anastasia Knihnitska"
+                    value={props.values.name}
+                    onChange={props.handleChange}
+                    className={
+                      props.touched.name && props.errors.name ? 'error' : ''
+                    }
+                  />
+                </div>
                 <ErrorMessage name="name">
                   {msg => (
                     <Error>
@@ -105,19 +119,28 @@ export const ContactForm = () => {
                 </ErrorMessage>
               </LabelContainer>
               <LabelContainer>
-                <label htmlFor="number">Number</label>{' '}
-                <StyledField
-                  id="number"
-                  type="tel"
-                  name="number"
-                  required
-                  placeholder="+38 000 000 00 00"
-                  value={props.values.number}
-                  onChange={props.handleChange}
-                  className={
-                    props.touched.number && props.errors.number ? 'error' : ''
-                  }
-                />
+                <div
+                  style={{
+                    display: 'flex',
+                    wtap: 'nowrap',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <label htmlFor="number">Number</label>{' '}
+                  <StyledField
+                    id="number"
+                    type="tel"
+                    name="number"
+                    required
+                    placeholder="+38 000 000 00 00"
+                    value={props.values.number}
+                    onChange={props.handleChange}
+                    className={
+                      props.touched.number && props.errors.number ? 'error' : ''
+                    }
+                  />
+                </div>
                 <ErrorMessage name="number">
                   {msg => (
                     <Error>

@@ -4,8 +4,8 @@ export const Avatar = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 35px;
-  height: 35px;
+  min-width: 35px;
+  min-height: 35px;
   border-radius: 50%;
   color: white;
 `;

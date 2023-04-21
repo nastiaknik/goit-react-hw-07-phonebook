@@ -1,19 +1,31 @@
-import { useSelector } from 'react-redux';
-import { getContacts } from '../redux/selectors';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectContacts } from '../redux/selectors';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Layout } from 'components/Layout/Layout';
 import { Section } from 'components/Section/Section';
-import { ContactForm } from './ContactForm/ContactForm';
+import { AddContactForm } from './AddContactForm/AddContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { ContactFilter } from './ContactFilter/ContactFilter';
+import { fetchContacts } from 'redux/operations';
+import { useEffect } from 'react';
 
 export const App = () => {
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(selectContacts);
+  /* const isLoading = useSelector(selectIsLoading); */
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    dispatch(fetchContacts(controller.signal));
+
+    return () => controller.abort();
+  }, [dispatch]);
+
   return (
     <Layout>
       <Section title="Phonebook">
-        <ContactForm />
+        <AddContactForm />
       </Section>
       {contacts.length > 0 && (
         <Section title="Contacts">

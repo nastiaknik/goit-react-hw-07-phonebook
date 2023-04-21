@@ -11,7 +11,7 @@ export const TableHead = styled.th`
   font-size: 16px;
   color: black;
   font-weight: 400;
-  width: 153px;
+  width: /* 153px; */ fit-content;
   max-height: 50px;
 
   :not(:last-child) {
